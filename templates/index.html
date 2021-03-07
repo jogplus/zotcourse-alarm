@@ -1,0 +1,159 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Zotcourse Alarm</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta name="theme-color" content="#563d7c">
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container">
+  <div class="py-5 text-center">
+    <h2>Zotcourse Alarm</h2>
+    <p class="lead mb-0">Get a notification whenever a course opens up!</p>
+    <p>By Tristan Jogminas</p>
+    {% if courses is defined %}
+        <a class="btn btn-secondary" href="/logout" role="button">Logout</a>
+    {% endif %}
+  </div>
+
+  <div class="row justify-content-md-center">
+    {% if courses is defined %}
+        <div class="col-md-4 order-md-2 mb-4">
+          <h4 class="mb-3">Enter a course code to monitor when it opens:</h4>
+          <form action="/course" method="post" class="needs-validation" novalidate>
+              <div class="form-row align-items-end">
+                <div class="col-9 mb-3 form-group">
+                  <input class="form-control" id="code" name="course_code" placeholder="Course code (ie. 34240)" required>
+                  <div class="invalid-feedback">
+                      Please enter a valid course code.
+                  </div>
+                </div>
+                <div class="col mb-3"> 
+                  <button class="btn btn-primary btn-block" type="submit">Submit</button>
+                </div>
+              </div>
+          </form>
+          <hr class="mb-4">
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted">Your added courses</span>
+              <span class="badge badge-secondary badge-pill">{{ courses|length }}</span>
+          </h4>
+          <ul class="list-group mb-3">
+              {% for course in courses %}
+                  <li class="list-group-item d-flex justify-content-between lh-condensed">
+                  <div>
+                      <h6 class="my-0">{{ course['course_type'] }} {{ course['course_department'] }} {{ course['course_number'] }} <a class="fas fa-trash-alt" style="color:red;" href="/course/delete?id={{ course['id'] }}"></a></h6>
+                      <small class="text-muted">{{ course['course_code'] }}</small>
+                  </div>
+                  <span class="text-muted">{{ course['course_status'] }}</span>
+                  </li>
+              {% endfor %}
+          </ul>
+        </div>
+    {% endif %}
+
+    {% if courses is defined %}
+    <div class="col-md-4 order-md-1">
+      <h4 class="mb-3">{{ user['email'] }}</h4>
+      <form action="/user" method="post" class="needs-validation" novalidate>
+        <div class="form-row mb-1">
+          <div class="col">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="is-receives-email" name="is-receives-email" {{ 'checked' if user.is_receives_email else '' }}>
+                <label class="custom-control-label" for="is-receives-email">Receive email notifcations</label>
+              </div>
+          </div>
+        </div>
+        <div class="form-row mb-1">
+          <div class="col">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="is-receives-text" name="is-receives-text" {{ 'checked' if user.is_receives_text else '' }}>
+                <label class="custom-control-label" for="is-receives-text">Receive text notifcations</label>
+              </div>
+          </div>
+        </div>
+        <div class="form-row mb-3">
+          <div class="col-8">
+            <input type="tel" class="form-control" id="phone-number" name="phone-number" value="{{ user.phone_number if user.phone_number else '' }}" placeholder="Phone number" {{ 'disabled' if not user.is_receives_text else '' }}>
+          </div>
+          <div class="col">
+            <select class="form-control" id="phone-carrier" name="phone-carrier" {{ 'disabled' if not user.is_receives_text else '' }}>
+              <option value="0" {{ 'selected' if user.phone_carrier == 0 else '' }}>Verizon</option>
+              <option value="1" {{ 'selected' if user.phone_carrier == 1 else '' }}>AT&T</option>
+              <option value="2" {{ 'selected' if user.phone_carrier == 2 else '' }}>MetroPCS</option>
+              <option value="3" {{ 'selected' if user.phone_carrier == 3 else '' }}>Sprint</option>
+              <option value="4" {{ 'selected' if user.phone_carrier == 4 else '' }}>T-Mobile</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Update</button>
+      </form>
+    </div>
+    {% else %}
+    <div class="col-md-4">
+        <h4 class="mb-3">Login/Register:</h4>
+        <form action="/login" method="post" class="needs-validation" novalidate>
+            <div class="mb-3 form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required>
+                <div class="invalid-feedback">
+                    Please enter a valid email address.
+                </div>
+            </div>
+            
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
+        </form>
+    </div>
+    {% endif %}
+  </div>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+  </footer>
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/fd2daac4ea.js" crossorigin="anonymous"></script>
+<script>
+  function updateFields() {
+    if ($("#is-receives-text").is(':checked')) {
+      $("#phone-number").removeAttr("disabled");
+      $("#phone-carrier").removeAttr("disabled");
+    }
+    else {
+      $("#phone-number").prop('disabled', true);
+      $("#phone-carrier").prop('disabled', true);
+    }
+  }
+  $(document).ready(function() {
+    updateFields();
+    $("#is-receives-text").click(function(){
+      updateFields();
+    })
+  });
+</script>
+</html>
