@@ -2,9 +2,7 @@
 
 Get an email and text message notification when a course opens up!
 
-Login Page            |  Home Page
-:-------------------------:|:-------------------------:
-![Login Screenshot](https://imgur.com/ILFXNEy.png) |  ![Home Screenshot](https://i.imgur.com/zQkxKan.png)
+![Home Screenshot](https://i.imgur.com/bKDkRTB.jpg)
 
 ## Setup
 
@@ -13,7 +11,7 @@ Login Page            |  Home Page
     $ python3 -m venv env
     $ source env/bin/activate
     ```
-2. Navigate to the root of the zotcourse-alarm folder, and run the following:
+2. Navigate to the root of the zotcourse-alarm folder, and install the project dependencies:
     ```
     $ cd zotcourse-alarm
     $ pip3 install -r requirements.txt
